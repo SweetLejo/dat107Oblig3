@@ -10,7 +10,7 @@ create table employee
   employment_date date,
   stilling varchar(30),
   wage numeric(10, 2),
-  department int,
+  department_id int not null on delete restrict,
   forgein key (department_id) references department(department_id),
   project int forgein key references project(id)
   );
@@ -19,7 +19,7 @@ create table departemnt
 (
   department_id serial primary key,
   department_name varchar(30),
-  boss_id int references emplyee_id
+  boss_employee_id int not null references emplyee_id
 
 );
 
