@@ -9,7 +9,7 @@ create table employee
   first_name varchar(30),
   last_name varchar(30),
   employment_date date,
-  stilling varchar(30),
+  job_title varchar(30),
   wage numeric(10, 2),
   department_id int not null on delete restrict,
 
