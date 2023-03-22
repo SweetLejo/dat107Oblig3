@@ -19,7 +19,7 @@
 			
 			<!--  EclipseLink properties -->
             <!--  Se https://wiki.eclipse.org/EclipseLink/Examples/JPA/Logging -->
-            <property name="eclipselink.logging.level" value="WARNING"/>
+            <!-- <property name="eclipselink.logging.level" value="WARNING"/> -->
 		</properties>
 	</persistence-unit>
 </persistence> 
