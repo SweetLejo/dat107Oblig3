@@ -43,5 +43,5 @@ create table project_participation
   employee_id int not null references employee(employee_id),
   project_id int not null references project(project_id),
   time_spent int,
-  wage numeric(10, 2)
+
 );
