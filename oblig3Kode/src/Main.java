@@ -9,7 +9,7 @@ public class Main {
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("my-persistence-unit");
 
     public static void main(String[] args){
-        
+
     }
 
 }
