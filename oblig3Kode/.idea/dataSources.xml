@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://ider-database.westeurope.cloudapp.azure.com:5432/h669778</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="mydatabase@92.221.220.248" uuid="b560883c-1a7b-4389-9fe6-15249b65aedb">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://92.221.220.248:5432/mydatabase</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

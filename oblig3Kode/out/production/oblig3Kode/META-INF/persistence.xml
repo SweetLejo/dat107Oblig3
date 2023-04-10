@@ -15,7 +15,7 @@
 			<property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://ider-database.westeurope.cloudapp.azure.com:5432/h669778"/>
 			<property name="jakarta.persistence.jdbc.user" value="h669778"/>
 
-			<property name="jakarta.persistence.jdbc.password" value="pass"/>
+			<!--<property name="jakarta.persistence.jdbc.password" value="??s"/> -->
 			
 			<!--  EclipseLink properties -->
             <!--  Se https://wiki.eclipse.org/EclipseLink/Examples/JPA/Logging -->
