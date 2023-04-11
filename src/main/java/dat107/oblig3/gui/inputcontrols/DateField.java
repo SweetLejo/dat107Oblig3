@@ -40,6 +40,11 @@ public class DateField extends JPanel {
 	}
 	
 	public void setDate(Date date) {
+		if(date == null) {
+			setDateEmpty();
+			return;
+		}
+		
 		String dateString = DATE_FORMAT.format(date);
 		
 		day.setText(dateString.substring(0, 2));

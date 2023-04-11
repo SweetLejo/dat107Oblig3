@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -17,6 +18,7 @@ import dat107.oblig3.entity.Employee;
 import dat107.oblig3.entity.Project;
 import dat107.oblig3.entity.ProjectParticipation;
 import dat107.oblig3.gui.collection.ProjectParticipationList;
+import dat107.oblig3.gui.controller.ParticipationController;
 import dat107.oblig3.gui.inputcontrols.EntityComboBox;
 import dat107.oblig3.gui.inputcontrols.NumericField;
 import dat107.oblig3.gui.screen.Screen;
@@ -24,177 +26,111 @@ import dat107.oblig3.gui.screen.Screen;
 @SuppressWarnings("serial")
 public class ParticipationsWidget extends Widget {
 	
-	private final Screen screen;
-	
-	private final ProjectParticipationList participationsList = 
-			new ProjectParticipationList();
-	
+	private final ParticipationController controller;
+	private final ProjectParticipationList participationsList;
+	private final JScrollPane listScrollPane;
 	private final ParticipationEditorWidget editorWidget;
+	private final JButton deleteButton;
+	private final JButton editButton;
+	private final JButton newParticipationButton;
 	
-	private final JButton deleteButton = createWidgetButton(
-			"Delete", e -> onDelete());
-	private final JButton editButton = createWidgetButton(
-			"Edit", e -> onEdit());
-	private final JButton addNewPartcipationButton = createWidgetButton(
-			"Add New Participation", e -> onAddParticipation());
-	private final JButton saveButton = createWidgetButton(
-			"Save", e -> onSave());
-	private final JButton cancelButton = createWidgetButton(
-			"Cancel", e -> onCancel());
+	public ParticipationsWidget(Screen screen) {
+		super("Project Participations");
+		this.controller = new ParticipationController(screen, this);
+		this.participationsList = new ProjectParticipationList();
+		this.listScrollPane = new JScrollPane(participationsList);
+		this.editorWidget = new ParticipationEditorWidget(controller);
+		this.deleteButton = createWidgetButton("Delete", e -> controller.deleteParticipation());
+		this.editButton = createWidgetButton("Edit", e -> controller.editParticipation());
+		this.newParticipationButton = createWidgetButton("Add New Participation", e -> controller.createNewParticipation());
+
+		configureComponents();
+		addComponents();
+//		screen.validate();
+	}
 	
-	private Object selected;
-	
-	public ParticipationsWidget(String title, Screen screen) {
-		super(title);
-		this.screen = screen;
-		this.editorWidget = new ParticipationEditorWidget(screen);
-		
+	private void configureComponents() {
 		editorWidget.setBorder(BorderFactory.createEmptyBorder());
 		
 		participationsList.addSelectionListener(selected -> {
-			removeField(editorWidget);
-			updateButtons(selected);
+			controller.setSelectedParticipation(selected);
+			
+			setEditAndDeleteButtonsEnabled(selected != null);
 		});
 		
-		JScrollPane listScrollPane = new JScrollPane(
-				participationsList,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		listScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		listScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		listScrollPane.setBorder(BorderFactory.createLineBorder(Color.WHITE));
 		
-		addFullWidthField(listScrollPane);
-		
-		setButtons(deleteButton, editButton, addNewPartcipationButton);
-		setButtonsEnabled(false);
-		
-		screen.validate();
+		setEditAndDeleteButtonsEnabled(false);
 	}
 	
-	private void onDelete() {
-		ProjectParticipation selected = participationsList.getSelected();
-		
-		if(selected == null) {
-			showErrorMessage("No projectparticipation selected");
-			return;
-		}
-		
-		Employee employee = selected.getEmployee();
-		Project project = selected.getProject();
-		
-		EmployeeDAO dao = new EmployeeDAO();
-		
-		try {
-			dao.removeEmployeeFromProject(employee.getId(), project.getId());
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			showErrorMessage("Employee has registered hours in the project.");
-		} catch (Throwable e) {
-			e.printStackTrace();
-			showErrorMessage("Error occured deleting project participation");
-		}
-		
-		screen.refresh();
-	}
-	
-	private void onEdit() {
-		if(!editorWidget.isShowing()) {
-			addFullWidthField(editorWidget);
-		}
-		
-		editorWidget.edit(participationsList.getSelected());
-		
-		setButtons(cancelButton, saveButton);
-		
-		screen.validate();
-	}
-	
-	private void onAddParticipation() {
-		if(!editorWidget.isShowing()) {
-			addFullWidthField(editorWidget);
-		}
-		
-		if(selected instanceof Employee) {
-			editorWidget.newParticipation((Employee) selected);
-		} else if(selected instanceof Project) {
-			editorWidget.newParticipation((Project) selected);
-		} else {
-			editorWidget.newParticipation();
-		}
-		
-		setButtons(cancelButton, saveButton);
-		
-		screen.validate();
-	}
-	
-	private void onSave() {
-		if(!editorWidget.isShowing()) {
-			return;
-		}
-		
-		editorWidget.save();
-		
-		onCancel();
-	}
-	
-	private void onCancel() {
-		if(!editorWidget.isShowing()) {
-			return;
-		}
-		
-		removeField(editorWidget);
-		setButtons(deleteButton, editButton, addNewPartcipationButton);
-		
-		screen.validate();
-	}
-	
-	private void updateButtons(ProjectParticipation selected) {
-		setButtonsEnabled(selected != null);
-	}
-	
-	private void setButtonsEnabled(boolean enable) {
+	private void setEditAndDeleteButtonsEnabled(boolean enable) {
 		deleteButton.setEnabled(enable);
 		editButton.setEnabled(enable);
 	}
 	
-	public void setEmployee(Employee employee) {
-		selected = employee;
-		
-		participationsList.setListType(ProjectParticipationList.ListContent.PROJECT);
+	private void addComponents() {
+		addFullWidthField(listScrollPane);
+		setButtons(deleteButton, editButton, newParticipationButton);
+	}
+	
+	public void updateParticipationsList(Employee employee) {
+		participationsList.setListContent(ProjectParticipationList.ListContent.PROJECT);
 		
 		if(employee != null) {
 			participationsList.updateContent(employee.getParticipations());
 		} else {
 			participationsList.updateContent(Collections.emptyList());
 		}
-		
-		setTitle("Projects");
-		resetWidget();
 	}
 	
-	public void setProject(Project project) {
-		selected = project;
-		
-		participationsList.setListType(ProjectParticipationList.ListContent.EMPLOYEE);
+	public void updateParticipationsList(Project project) {
+		participationsList.setListContent(ProjectParticipationList.ListContent.EMPLOYEE);
 		
 		if(project != null) {
 			participationsList.updateContent(project.getParticipations());
 		} else {
 			participationsList.updateContent(Collections.emptyList());
 		}
-		
-		setTitle("Participants");
-		resetWidget();
 	}
 	
-	public void resetWidget() {
-		removeField(editorWidget);
-		setButtons(deleteButton, editButton, addNewPartcipationButton);
-		
-		screen.validate();
+	public void showParticipationEditorWidget() {
+		if(!editorWidget.isShowing()) {
+			addFullWidthField(editorWidget);
+		}
 	}
 	
-	private void showErrorMessage(String error) {
-		JOptionPane.showMessageDialog(screen, error, "Error", JOptionPane.ERROR_MESSAGE);
+	public void hideParticipationEditorWidget() {
+		if(editorWidget.isShowing()) {
+			removeField(editorWidget);
+		}
+	}
+	
+	public void showButtons() {
+		if(!buttonsAreShowing()) {
+			setButtons(deleteButton, editButton, newParticipationButton);
+		}
+	}
+	
+	public void hideButtons() {
+		if(buttonsAreShowing()) {
+			setButtons();
+		}
+	}
+	
+	private boolean buttonsAreShowing() {
+		return editButton.isShowing() 
+				&& deleteButton.isShowing() 
+				&& newParticipationButton.isShowing();
+	}
+	
+	public ProjectParticipationList getParticipationList() {
+		return participationsList;
+	}
+	
+	public ParticipationEditorWidget getParticipationEditorWidget() {
+		return editorWidget;
 	}
 	
 }

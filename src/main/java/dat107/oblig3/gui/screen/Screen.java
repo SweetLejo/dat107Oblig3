@@ -8,6 +8,7 @@ import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.SwingUtilities;
@@ -118,6 +119,12 @@ public abstract class Screen extends JPanel implements Scrollable, AutoCloseable
 		}
 		
 		validate();
+	}
+	
+	public void showErrorMessage(String message) {
+		JOptionPane.showMessageDialog(this, message, 
+				"Error", 
+				JOptionPane.ERROR_MESSAGE);
 	}
 
 	@Override

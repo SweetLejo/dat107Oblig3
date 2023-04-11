@@ -28,21 +28,12 @@ import dat107.oblig3.gui.widget.Widget;
 public abstract class SearchScreen<T> extends Screen {
 
 	protected final SearchBar searchBar = new SearchBar((o, s) -> onSearch(o, s));
-	protected final EntityCollection<T> dataset = getDatasetComponent();
+	protected final EntityCollection<T> dataset = initializeCollectionComponent();
 	protected final JScrollPane scrollPane = new JScrollPane(dataset.getGuiComponent());
 	protected final JPanel widgets = new JPanel(new GridBagLayout());
 	protected final JPanel buttons = new JPanel();
 	
 	private Map<String, Function<String, List<T>>> searchOpt = new HashMap<>();
-	
-	private GridBagConstraints widgetPositions = new GridBagConstraints() {{
-		ipady = 8;
-		ipadx = 16;
-		insets = new Insets(8, 0, 8, 16);
-		weightx = 1;
-		weighty = 1;
-		fill = GridBagConstraints.HORIZONTAL;
-	}};
 
 	protected SearchScreen() {
 		setBackground(UITheme.DEFAULT_BACKGROUND_COLOR);
@@ -68,7 +59,7 @@ public abstract class SearchScreen<T> extends Screen {
 		setBottomPanel(buttons);
 	}
 
-	protected abstract EntityCollection<T> getDatasetComponent();
+	protected abstract EntityCollection<T> initializeCollectionComponent();
 
 	private void onSearch(String option, String search) {
 		List<T> results = searchOpt.get(option).apply(search);
@@ -82,7 +73,7 @@ public abstract class SearchScreen<T> extends Screen {
 	}
 	
 
-	protected void showNoResultsDialog(String message) {
+	public void showNoResultsDialog(String message) {
 		JOptionPane.showMessageDialog(this, message, "No results", 
 				JOptionPane.ERROR_MESSAGE);
 	}
@@ -124,14 +115,31 @@ public abstract class SearchScreen<T> extends Screen {
 	}
 	
 	protected void showWidget(Widget widget, int row) {
-		widgetPositions.gridy = row;
-		widgets.add(widget, widgetPositions);
+		widgets.add(widget, getWidgetPosition(row));
 		
 		validate();
 	}
 	
+	private GridBagConstraints getWidgetPosition(int row) {
+		return new GridBagConstraints() {{
+			ipady = 8;
+			ipadx = 16;
+			insets = new Insets(8, 0, 8, 16);
+			weightx = 1;
+			weighty = 1;
+			gridy = row;
+			fill = GridBagConstraints.HORIZONTAL;
+		}};
+	}
+	
 	protected void hideWidget(Widget widget) {
 		widgets.remove(widget);
+		
+		validate();
+	}
+	
+	public void hideAllWidgets() {
+		widgets.removeAll();
 		
 		validate();
 	}

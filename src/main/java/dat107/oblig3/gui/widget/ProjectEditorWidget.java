@@ -16,7 +16,7 @@ import dat107.oblig3.entity.Department;
 import dat107.oblig3.entity.Employee;
 import dat107.oblig3.entity.Project;
 import dat107.oblig3.gui.UITheme;
-import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
+import dat107.oblig3.gui.inputcontrols.StyledTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
@@ -24,8 +24,8 @@ public class ProjectEditorWidget extends Widget {
 
 	private final Screen screen;
 	
-	private final JTextField idField = new ToggleableTextField(12);
-	private final JTextField nameField = new ToggleableTextField(12);
+	private final JTextField idField = new StyledTextField(12);
+	private final JTextField nameField = new StyledTextField(12);
 	private final JTextArea descriptionArea = new JTextArea(5, 20);
 	
 	private final JButton saveButton = createWidgetButton("Save", e -> onSave());

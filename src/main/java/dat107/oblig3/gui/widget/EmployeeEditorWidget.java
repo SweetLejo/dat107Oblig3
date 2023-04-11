@@ -1,5 +1,7 @@
 package dat107.oblig3.gui.widget;
 
+import java.util.Date;
+
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -8,41 +10,62 @@ import dat107.oblig3.dao.EmployeeDAO;
 import dat107.oblig3.entity.Department;
 import dat107.oblig3.entity.Employee;
 import dat107.oblig3.gui.UITheme;
+import dat107.oblig3.gui.controller.EmployeeController;
 import dat107.oblig3.gui.inputcontrols.DateField;
 import dat107.oblig3.gui.inputcontrols.EntityComboBox;
 import dat107.oblig3.gui.inputcontrols.NumericField;
-import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
+import dat107.oblig3.gui.inputcontrols.StyledTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 @SuppressWarnings("serial")
 public class EmployeeEditorWidget extends Widget {
 	
-	private final Screen screen;
+	private final EmployeeController controller;
+	private final JTextField id;
+	private final JTextField username;
+	private final JTextField firstName;
+	private final JTextField lastName;
+	private final DateField employmentDate;
+	private final JTextField position;
+	private final NumericField salary;
+	private final EntityComboBox<Department> department;
+	private final JButton saveButton;
+	private final JButton cancelButton;
 	
-	private final JTextField id = new ToggleableTextField(10);
-	private final JTextField username = new ToggleableTextField(10);
-	private final JTextField firstName = new ToggleableTextField(10);
-	private final JTextField lastName = new ToggleableTextField(10);
-	private final DateField employmentDate = new DateField();
-	private final JTextField position = new ToggleableTextField(10);
-	private final NumericField salary = new NumericField(10, true);
-	private final EntityComboBox<Department> department = 
-			EntityComboBox.createDepartmentComboBox();
-	
-	private final JButton saveButton = createWidgetButton("Save", e -> onSave());
-	private final JButton cancelButton = createWidgetButton("Cancel", e -> onCancel());
-	
-	private EmployeeDAO dao = new EmployeeDAO();
-	private Employee employee;
-	
-	public EmployeeEditorWidget(Screen screen) {
+	public EmployeeEditorWidget(EmployeeController controller) {
 		super("About Employee");
-		this.screen = screen;
-		
-		id.setEditable(false);
+		this.controller = controller;
+		this.id = new StyledTextField(10);
+		this.username = new StyledTextField(10);
+		this.firstName = new StyledTextField(10);
+		this.lastName = new StyledTextField(10);
+		this.employmentDate = new DateField();
+		this.position = new StyledTextField(10);
+		this.salary = new NumericField(10, true);
+		this.department = EntityComboBox.createDepartmentComboBox();
+		this.saveButton = createWidgetButton("Save", e -> controller.saveEmployee());
+		this.cancelButton = createWidgetButton("Cancel", e -> controller.cancelEditingEmployee());
+
+		configureComponents();
+		addComponents();
+	}
+	
+	private void configureComponents() {
 		employmentDate.setBackground(UITheme.ALTERNATIVE_BACKGROUND_COLOR);	
 		department.setPreferredSize(position.getPreferredSize());
 		
+		setIdEditable(false);
+		setUsernameEditable(false);
+		setUsernameEditable(false);
+		setFirstNameEditable(false);
+		setLastNameEditable(false);
+		setEmploymentDateEditable(false);
+		setPositionEditable(false);
+		setSalaryEditable(false);
+		setDepartmentEditable(false);
+	}
+	
+	private void addComponents() {
 		addLabeledField("ID:", id, "Auto-generated");
 		addLabeledField("Username:", username, "3 characters");
 		addLabeledField("First Name:", firstName);
@@ -51,150 +74,182 @@ public class EmployeeEditorWidget extends Widget {
 		addLabeledField("Position:", position);
 		addLabeledField("Monthly Salary:", salary);
 		addLabeledField("Department:", department);
-		
-		setAllFieldsEditable(false);
 	}
 	
-	public void setAllFieldsEditable(boolean editable) {
-		username.setEditable(editable);
-		firstName.setEditable(editable);
-		lastName.setEditable(editable);
-		employmentDate.setEditable(editable);
-		position.setEditable(editable);
-		salary.setEditable(editable);
-		
-		if(employee != null && employee.isManager()) {
-			department.setEditable(false);
-		} else {
-			department.setEditable(editable);
-		}
-	}
-
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-		
-		if(employee != null) {
-			fillFields(employee);
-		} else {
-			emptyAllFields();
-		}	
-		
-		setAllFieldsEditable(false);
-		setButtons();
+	public void populateAllFields(int id, String username, String firstName, 
+			String lastName, Date employmentDate, String position, 
+			double salary, Department department) {
+		setId(id + "");
+		setUsername(username);
+		setFirstName(firstName);
+		setLastName(lastName);
+		setEmploymentDate(employmentDate);
+		setPosition(position);
+		setSalary(salary + "");
+		setDepartment(department);
 	}
 	
-	private void fillFields(Employee employee) {
-		id.setText(employee.getId() + "");
-		username.setText(employee.getUsername());
-		firstName.setText(employee.getFirstName());
-		lastName.setText(employee.getLastName());
-		employmentDate.setDate(employee.getEmploymentDate());
-		position.setText(employee.getPosition());
-		salary.setText(employee.getMonthlySalary() + "");
-		department.setSelectedItem(employee.getDepartment());
+	public void enableEditingForExistingEmployee() {
+		setTitle("Edit Employee");
+		
+		setIdEditable(false);
+		setUsernameEditable(false);
+		setUsernameEditable(false);
+		setFirstNameEditable(false);
+		setLastNameEditable(false);
+		setEmploymentDateEditable(false);
+		setPositionEditable(true);
+		setSalaryEditable(true);
+		setDepartmentEditable(true);
 	}
 	
-	public void emptyAllFields() {
-		id.setText("");
-		username.setText("");
-		firstName.setText("");
-		lastName.setText("");
-		employmentDate.setDateEmpty();
-		position.setText("");
-		salary.setText("");
-		department.setSelectedItem(null);
+	public void resetFieldsForNewEmployee() {
+		setTitle("New Employee");
+		
+		emptyFieldsForNewEmployee();
+		setFieldsEditableForNewEmployee();
 	}
 	
-	public void editEmployee() {
-		if(employee != null) {
-			setTitle("Edit Employee");
-			
-			position.setEditable(true);
-			salary.setEditable(true);
-			department.setEditable(true);
-			
+	private void emptyFieldsForNewEmployee() {
+		setId("Generated");
+		setUsername("");
+		setFirstName("");
+		setLastName("");
+		setEmploymentDate(null);
+		setPosition("");
+		setSalary("");
+		setDepartment(null);
+	}
+	
+	private void setFieldsEditableForNewEmployee() {
+		setIdEditable(false);
+		setUsernameEditable(true);
+		setFirstNameEditable(true);
+		setLastNameEditable(true);
+		setEmploymentDateEditable(true);
+		setPositionEditable(true);
+		setSalaryEditable(true);
+		setDepartmentEditable(true);
+	}
+	
+	public void disableAllFields() {
+		setIdEditable(false);
+		setUsernameEditable(false);
+		setUsernameEditable(false);
+		setFirstNameEditable(false);
+		setLastNameEditable(false);
+		setEmploymentDateEditable(false);
+		setPositionEditable(false);
+		setSalaryEditable(false);
+		setDepartmentEditable(false);
+	}
+	
+	public void showSaveAndCancelButtons() {
+		if(!cancelButton.isShowing() || !saveButton.isShowing()) {
 			setButtons(cancelButton, saveButton);
 		}
 	}
 	
-	public void newEmployee() {
-		employee = null;
-		emptyAllFields();
-		setAllFieldsEditable(true);
-		
-		titleLabel.setText("New Employee");
-		id.setText("Generated");
-		setButtons(cancelButton, saveButton);
-	}
-	
-	private void onSave() {
-		if(employee != null) {
-			saveChanges();
-		} else {
-			saveNewEmployee();
-		}
-		
-		onCancel();
-	}
-	
-	private void saveChanges() {
-		if(salary.getDouble() != employee.getMonthlySalary()) {
-			saveSalary();
-		}
-		if(position.getText() != employee.getPosition()) {
-			savePosition();
-		}
-		if(!department.getSelectedItem().equals(employee.getDepartment())) {
-			saveDepartment();	
+	public void hideSaveAndCancelButtons() {
+		if(cancelButton.isShowing() || saveButton.isShowing()) {
+			setButtons();
 		}
 	}
 	
-	private void saveSalary() {
-		try {
-			dao.updateSalary(employee.getId(), salary.getDouble());
-		} catch(Throwable e) {
-			handleSaveException(e, "Error occured while updating salary.");
-		}
+	public String getId() {
+		return id.getText();
 	}
 	
-	private void savePosition() {
-		try {
-			dao.updatePosition(employee.getId(), position.getText());
-		} catch(Throwable e) {
-			handleSaveException(e, "Error occured while updating position.");
-		}
+	public void setId(String id) {
+		this.id.setText(id);
 	}
 	
-	private void saveDepartment() {
-		try {
-			dao.updateDepartment(employee.getId(), (Department)department.getSelectedItem());
-		} catch(Throwable e) {
-			handleSaveException(e, "Error occured while updating department.");
-		}
+	public void setIdEditable(boolean editable) {
+		id.setEditable(editable);
 	}
 	
-	private void saveNewEmployee() {
-		try {
-			 dao.saveNewEmployee(username.getText(), firstName.getText(), 
-					lastName.getText(), employmentDate.getDate(), 
-					position.getText(), salary.getDouble(),
-					(Department) department.getSelectedItem());
-			 
-		} catch(Throwable e) {
-			handleSaveException(e, "Error occured while saving new employee.");
-		}
+	public String getUsername() {
+		return username.getText();
 	}
 	
-	private void handleSaveException(Throwable e, String message) {
-		e.printStackTrace();
-		JOptionPane.showMessageDialog(screen, message);
+	public void setUsername(String username) {
+		this.username.setText(username);
 	}
 	
-	private void onCancel() {
-		getParent().remove(this);
-		
-		screen.refresh();
-		screen.validate();
+	public void setUsernameEditable(boolean editable) {
+		username.setEditable(editable);
+	}
+	
+	public String getFirstName() {
+		return firstName.getText();
+	}
+	
+	public void setFirstName(String firstName) {
+		this.firstName.setText(firstName);
+	}
+	
+	public void setFirstNameEditable(boolean editable) {
+		firstName.setEditable(editable);
+	}
+	
+	public String getLastName() {
+	    return lastName.getText();
+	}
+
+	public void setLastName(String lastName) {
+	    this.lastName.setText(lastName);
+	}
+
+	public void setLastNameEditable(boolean editable) {
+	    lastName.setEditable(editable);
+	}
+
+	public Date getEmploymentDate() {
+	    return employmentDate.getDate();
+	}
+	
+	public void setEmploymentDate(Date employmentDate) {
+	    this.employmentDate.setDate(employmentDate);
+	}
+
+	public void setEmploymentDateEditable(boolean editable) {
+	    employmentDate.setEditable(editable);
+	}
+
+	public String getPosition() {
+	    return position.getText();
+	}
+
+	public void setPosition(String position) {
+	    this.position.setText(position);
+	}
+
+	public double getSalary() throws IllegalArgumentException {
+	    return salary.getDouble();
+	}
+	
+	public void setPositionEditable(boolean editable) {
+	    position.setEditable(editable);
+	}
+	
+	public void setSalary(String salary) {
+	    this.salary.setText(salary);
+	}
+
+	public void setSalaryEditable(boolean editable) {
+	    salary.setEditable(editable);
+	}
+
+	public Department getDepartment() {
+	    return (Department) department.getSelectedItem();
+	}
+
+	public void setDepartment(Department department) {
+	    this.department.setSelectedItem(department);
+	}
+
+	public void setDepartmentEditable(boolean editable) {
+	    department.setEditable(editable);
 	}
 	
 }

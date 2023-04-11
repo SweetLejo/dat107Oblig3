@@ -41,7 +41,7 @@ public class ProjectParticipationList extends EntityList<ProjectParticipation> {
 		return type;
 	}
 	
-	public void setListType(ListContent type) {
+	public void setListContent(ListContent type) {
 		this.type = type;
 	}
 	

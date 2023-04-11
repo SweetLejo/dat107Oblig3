@@ -11,7 +11,7 @@ import dat107.oblig3.dao.EmployeeDAO;
 import dat107.oblig3.entity.Department;
 import dat107.oblig3.entity.Employee;
 import dat107.oblig3.gui.inputcontrols.EntityComboBox;
-import dat107.oblig3.gui.inputcontrols.ToggleableTextField;
+import dat107.oblig3.gui.inputcontrols.StyledTextField;
 import dat107.oblig3.gui.screen.Screen;
 
 /**
@@ -22,8 +22,8 @@ public class DepartmentEditorWidget extends Widget {
 
 	private final Screen screen;
 	
-	private final JTextField idField = new ToggleableTextField(12);
-	private final JTextField nameField = new ToggleableTextField(12);
+	private final JTextField idField = new StyledTextField(12);
+	private final JTextField nameField = new StyledTextField(12);
 	private final EntityComboBox<Employee> managerComboBox = 
 			new EntityComboBox<>(() -> getEmployees());
 	
