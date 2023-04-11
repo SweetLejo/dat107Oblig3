@@ -41,7 +41,7 @@ public class DepartmentsScreen extends SearchScreen<Department> {
 	}
 	
 	@Override
-	protected EntityCollection<Department> getDatasetComponent() {
+	protected EntityCollection<Department> initializeCollectionComponent() {
 		return new DepartmentTable();
 	}
 	

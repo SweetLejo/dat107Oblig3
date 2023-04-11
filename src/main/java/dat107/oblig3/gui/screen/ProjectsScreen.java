@@ -21,7 +21,7 @@ public class ProjectsScreen extends SearchScreen<Project> {
 	private ProjectEditorWidget editProjectWidget = 
 			new ProjectEditorWidget(this);
 	private ParticipationsWidget participantsWidget = 
-			new ParticipationsWidget("Paricipants", this);
+			new ParticipationsWidget(this);
 	
 	private JButton viewParticipantsButton;
 	
@@ -42,7 +42,7 @@ public class ProjectsScreen extends SearchScreen<Project> {
 	}
 	
 	@Override
-	protected EntityCollection<Project> getDatasetComponent() {
+	protected EntityCollection<Project> initializeCollectionComponent() {
 		return new ProjectList();
 	}
 	
@@ -65,7 +65,7 @@ public class ProjectsScreen extends SearchScreen<Project> {
 	
 	public void setProject(Project project) {
 		editProjectWidget.setProject(project);
-		participantsWidget.setProject(project);
+		participantsWidget.updateParticipationsList(project);
 		
 		hideWidget(editProjectWidget);
 		hideWidget(participantsWidget);
