@@ -35,7 +35,7 @@ public class DepartmentDao {
         }
 
 
-        public Department idExsists(int departmentId){
+        public Department searchForId(int departmentId){
             try (EntityManager em = emf.createEntityManager()) {
                 return em.find(Department.class, departmentId);
             } catch (Exception e) {
@@ -43,6 +43,17 @@ public class DepartmentDao {
             }
             return null;
         }
+
+        public boolean departmentIdExsists(int departmentId){
+            try (EntityManager em = emf.createEntityManager()) {
+                return em.find(Department.class, departmentId) != null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+
 
 
 }

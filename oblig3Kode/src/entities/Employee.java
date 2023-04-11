@@ -128,7 +128,7 @@ public class Employee {
                 ", employmentDate=" + employmentDate +
                 ", jobTitle='" + jobTitle + '\'' +
                 ", wage=" + wage +
-                ", department=" + department.getDepartmentId( +
+                ", department=" + department.getDepartmentId() +
                 ", project=" + project.getProjectId() +
                 '}';
     }

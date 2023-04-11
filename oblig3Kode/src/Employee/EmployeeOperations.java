@@ -11,19 +11,40 @@ import java.util.Scanner;
 import java.util.Date;
 
 
-public class EmployeeOperations {
+
+public class EmployeeOperations extends UiHelper {
 
     private static EmployeeDao dao = new EmployeeDao();
-    public static int menuReturnChoice(String menu){
 
+
+    public static void mainEmployeeMenu(){
         Scanner in = new Scanner(System.in);
-        System.out.println(menu);
-        if(in.hasNextInt()){
-            return in.nextInt();
-        }else{
-            System.out.println("Didn't enter int, now exiting...");
-            return -1;
-        }
+        int choice = 0;
+        String menu = """
+                ========================\s
+                1. Get all employees:\s
+                2. Search for employee:\s
+                3. Update an employee:\s
+                4. Add an employee:\s
+                To quit press any other key \s
+                ========================\s
+                choice: \s""";
+
+
+
+            choice = menuReturnChoice(menu);
+
+            switch (choice) {
+                case 1 -> printAllEmployees();
+                case 2 -> searchForEmployee();
+                case 3 -> updateEmployee();
+                case 4 -> addEmployee();
+                default -> {
+                    System.out.println("Invalid int now exiting... ");
+
+                }
+            }
+
     }
 
 
@@ -88,12 +109,15 @@ public class EmployeeOperations {
         }
     }
 
+
+
+
     public static void updateEmployee(){
         int choice = menuReturnChoice("""
                 ========================\s
                 1. Change name: \s
                 2. Change Wage: \s
-                3. Change Position \s
+                3. Change Position: \s
                 ========================\s
                 choice:""");
         switch(choice){
@@ -222,7 +246,7 @@ public class EmployeeOperations {
 
         DepartmentDao DDao = new DepartmentDao();
         int departmentId = menuReturnChoice("\nEnter department_id: ");
-        Department department = DDao.idExsists(departmentId);
+        Department department = DDao.searchForId(departmentId);
 
         ProjectDao PDao = new ProjectDao();
         int projectId = menuReturnChoice("\nEnter project_id: ");
