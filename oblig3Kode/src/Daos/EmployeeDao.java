@@ -1,4 +1,4 @@
-package Employee;
+package Daos;
 
 import entities.*;
 import jakarta.persistence.EntityManager;

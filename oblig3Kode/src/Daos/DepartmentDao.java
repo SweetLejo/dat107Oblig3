@@ -1,4 +1,4 @@
-package Department;
+package Daos;
 
 import entities.Department;
 import entities.Employee;

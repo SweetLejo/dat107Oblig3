@@ -1,8 +1,9 @@
-package Project;
+package Daos;
 
 import entities.Project;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
 import java.io.IOException;
@@ -42,6 +43,27 @@ public class ProjectDao {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public boolean addProject(Project project){
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        boolean changed = false;
+        try{
+            tx.begin();
+            em.persist(project);
+            tx.commit();
+            changed = true;
+        }catch(Exception e){
+            if(tx != null){
+                tx.rollback();
+            }
+            e.printStackTrace();
+        }finally{
+            em.close();
+        }
+        return changed;
     }
 
 

@@ -1,7 +1,7 @@
 import java.util.Scanner;
-import Employee.*;
-import Department.*;
-import Project.ProjectOperations;
+
+import Uis.*;
+import Uis.ProjectOperations;
 
 public class Main {
 

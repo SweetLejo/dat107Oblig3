@@ -28,6 +28,16 @@ public class Project {
         @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
         private Employee projectManager;
 
+        public Project(){
+
+        }
+
+        public Project(String projectName, String description, Employee projectManager, int timeSpent) {
+                this.projectName = projectName;
+                this.description = description;
+                this.projectManager = projectManager;
+                this.numberOfHours = timeSpent;
+        }
 
         public int getProjectId() {
                 return projectId;
@@ -68,6 +78,9 @@ public class Project {
         public void setProjectManager(Employee projectManager) {
                 this.projectManager = projectManager;
         }
+
+
+
 
         @Override
         public String toString() {

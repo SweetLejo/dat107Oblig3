@@ -1,10 +1,9 @@
-package Department;
+package Uis;
 
-import Employee.EmployeeDao;
+import Daos.DepartmentDao;
+import Daos.EmployeeDao;
 import entities.*;
-import Employee.UiHelper;
 import entities.Department;
-import jakarta.persistence.EntityManager;
 
 import java.util.Scanner;
 import java.util.List;

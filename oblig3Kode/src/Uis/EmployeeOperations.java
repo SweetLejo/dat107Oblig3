@@ -1,7 +1,8 @@
-package Employee;
+package Uis;
 
-import Department.DepartmentDao;
-import Project.ProjectDao;
+import Daos.EmployeeDao;
+import Daos.DepartmentDao;
+import Daos.ProjectDao;
 import entities.*;
 
 import java.text.ParseException;
