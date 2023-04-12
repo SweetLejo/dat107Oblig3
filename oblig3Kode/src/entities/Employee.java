@@ -20,8 +20,6 @@ public class Employee {
         this.employmentDate = employmentDate;
         this.jobTitle = jobTitle;
         this.wage = wage;
-
-
         this.department = department;
         this.project = project;
 
@@ -53,13 +51,14 @@ public class Employee {
 
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "department_id", referencedColumnName = "department_id")
     private Department department;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_id", referencedColumnName = "project_id")
     private Project project;
+
 
 
     public int getEmployeeId() {

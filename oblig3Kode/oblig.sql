@@ -23,7 +23,7 @@ CREATE TABLE employee (
 CREATE TABLE project (
   project_id SERIAL PRIMARY KEY,
   project_name VARCHAR(30),
-  beskrivelse TEXT,
+  description TEXT,
   number_of_hours INT,
   employee_id INT REFERENCES employee(employee_id)
 );
@@ -32,11 +32,12 @@ CREATE TABLE project_participation (
   participation_id SERIAL PRIMARY KEY,
   employee_id INT NOT NULL REFERENCES employee(employee_id) ON DELETE RESTRICT,
   project_id INT NOT NULL REFERENCES project(project_id) ON DELETE CASCADE,
-  time_spent INT CHECK (time_spent >= 0)
+  time_spent INT CHECK (time_spent >= 0),
+  role varchar(20)
 );
 
 INSERT INTO department (department_name, boss_employee_id) VALUES
-('Sales', 1),
+('Sales', 1),er for en ansatt på et prosjek
 ('Marketing', 2),
 ('HR', 3),
 ('IT', 4);
@@ -51,14 +52,19 @@ INSERT INTO employee (unique_name, first_name, last_name, employment_date, job_t
 ('PQR', 'Amy', 'Nguyen', '2022-05-01', 'Marketing Representative', 2500, 2);
 
 
-ALTER TABLE employee ADD CONSTRAINT fk_project FOREIGN KEY (project_id) REFERENCES project(project_id) ON DELETE SET NULL;
+ALTER TABLE employee ADD CONSTRAINT fk_project FOREIGN KEY (project_id) REFERENCES project(project_id);
 alter table department add constraint fk_employee foreign key (boss_employee_id) references employee(employee_id) ON DELETE RESTRICT;
 
 
-INSERT INTO project (project_name, beskrivelse, number_of_hours, employee_id)
+INSERT INTO project (project_name, description, number_of_hours, employee_id)
 VALUES
-  ('entities.Project 6', 'Description 1', 200, 1),
-  ('entities.Project 7', 'Description 2', 300, 2);
+  ('Project 1', 'Description 1', 200, 1),
+  ('Project 2', 'Description 2', 300, 2);
+  ('Project 3', 'Description 3', 300, 2);
+  ('Project 4', 'Description 4', 300, 2);
+
+update employee
+set project_id=1;
 
 
 INSERT INTO project_participation (employee_id, project_id, time_spent)

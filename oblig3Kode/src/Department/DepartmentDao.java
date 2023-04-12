@@ -4,10 +4,12 @@ import entities.Department;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.TypedQuery;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.List;
 
 public class DepartmentDao {
 
@@ -32,6 +34,22 @@ public class DepartmentDao {
 
         public void setupEntityManager1(){
             emf = Persistence.createEntityManagerFactory("my-persistence-unit");
+        }
+
+
+
+        public List<Department> getAllDepartments(){
+        EntityManager em = emf.createEntityManager();
+        try{
+            String q = "Select d from Department d";
+            TypedQuery<Department> query = em.createQuery(q, Department.class);
+            return query.getResultList();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            em.close();
+        }
+        return null;
         }
 
 

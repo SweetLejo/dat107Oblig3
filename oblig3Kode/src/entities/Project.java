@@ -24,7 +24,7 @@ public class Project {
         private int numberOfHours;
 
 
-        @ManyToOne(fetch = FetchType.LAZY)
+        @ManyToOne(fetch = FetchType.EAGER)
         @JoinColumn(name = "employee_id", referencedColumnName = "employee_id")
         private Employee projectManager;
 

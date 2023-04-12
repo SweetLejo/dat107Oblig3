@@ -3,6 +3,7 @@ package entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(schema = "oblig", name = "department")
@@ -16,9 +17,12 @@ public class Department {
     @Column(name = "department_name")
     private String departmentName;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "boss_employee_id", referencedColumnName = "employee_id")
     private Employee boss;
+
+    @OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
+    private List<Employee>  employees;
 
     public int getDepartmentId() {
         return departmentId;
@@ -42,6 +46,14 @@ public class Department {
 
     public void setBoss(Employee boss) {
         this.boss = boss;
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 
     @Override
