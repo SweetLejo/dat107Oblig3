@@ -24,6 +24,16 @@ public class Department {
     @OneToMany(mappedBy = "department", fetch = FetchType.EAGER)
     private List<Employee>  employees;
 
+
+    public Department(){
+
+    }
+
+    public Department(String departmentName, Employee boss) {
+        this.departmentName = departmentName;
+        this.boss = boss;
+    }
+
     public int getDepartmentId() {
         return departmentId;
     }

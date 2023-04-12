@@ -117,6 +117,22 @@ public class Employee {
         this.wage = wage;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -130,5 +146,20 @@ public class Employee {
                 ", department=" + department.getDepartmentId() +
                 ", project=" + project.getProjectId() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Employee employee = (Employee) o;
+
+        return employeeId == employee.employeeId;
+    }
+
+    @Override
+    public int hashCode() {
+        return employeeId;
     }
 }
