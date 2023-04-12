@@ -27,7 +27,7 @@ public class Main {
         boolean done = false;
         while (!done) {
 
-            choice = EmployeeOperations.menuReturnChoice(menu);
+            choice = UiHelper.menuReturnChoice(menu);
 
             switch (choice) {
                 case 1 -> EmployeeOperations.mainEmployeeMenu();

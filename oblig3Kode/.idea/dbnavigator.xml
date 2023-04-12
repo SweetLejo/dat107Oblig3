@@ -30,7 +30,6 @@
   </component>
   <component name="DBNavigator.Project.FileConnectionMappingManager">
     <mapping file-url="file://$PROJECT_DIR$/oblig.sql" connection-id="ec65a26d-5c8f-4024-ae69-859847e62a34" session-id="MAIN" current-schema="mydatabase" />
-    <mapping file-url="file://$PROJECT_DIR$/iterasjon1.sql" connection-id="ec65a26d-5c8f-4024-ae69-859847e62a34" session-id="MAIN" current-schema="mydatabase" />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
